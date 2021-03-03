@@ -12,31 +12,26 @@
 #include <thread>
 #include <atomic>
 
-#include "Logging.hpp"
+#include "Logger.hpp"
 #include "picosha2.h"
 
-struct ToFile {
-  std::string data;
-  std::string hash;
-  std::string time;
-};
 
 
 
-class Worker {
-
-
+class Scheduler {
  public:
-  Worker(volatile std::atomic_int& sig, int count);
-  Worker(volatile std::atomic_int& sig);
-  Worker(volatile std::atomic_int& sig, int count, std::string& file_name);
+  Scheduler(std::atomic_int& sig, int count);
+  Scheduler(std::atomic_int& sig);
+  Scheduler(std::atomic_int& sig, int count, std::string& file_name);
 
   void Stop();
 
 
-  ~Worker();
+  ~Scheduler() = default;
 //  void Interupt(volatile std::atomic_int& sig);
   void WriteToFileSync();
+  void Work();
+  void Task();
   void WriteToFile();
   void HashFinderWriteToFile();
   void HashFinder();
@@ -44,9 +39,8 @@ class Worker {
  private:
   std::vector<std::thread> _threads;
   volatile std::atomic_bool _work;
-  nlohmann::json _result;
-  std::string _fileName;
-  volatile std::atomic_int& _sig;
+  Logger _logger;
+  std::atomic_int& _sig;
 };
 
 #endif  // INCLUDE_HEADER_HPP_

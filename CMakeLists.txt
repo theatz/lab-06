@@ -44,8 +44,8 @@ find_package(Boost COMPONENTS log log_setup thread system)
 find_package(Threads)
 
 add_library(${PROJECT_NAME} STATIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/sources/Worker.cpp
-        )
+        ${CMAKE_CURRENT_SOURCE_DIR}/sources/Scheduler.cpp
+        include/Logger.hpp sources/Logger.cpp)
 
 add_executable(demo
         ${CMAKE_CURRENT_SOURCE_DIR}/demo/main.cpp
@@ -58,11 +58,13 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         "$<INSTALL_INTERFACE:include>"
         )
 
-target_link_libraries(${PROJECT_NAME} nlohmann_json::nlohmann_json ${Boost_LOG_SETUP_LIBRARY}
-        ${Boost_LOG_LIBRARY}
-        ${Boost_FILESYSTEM_LIBRARY}
-        ${Boost_THREAD_LIBRARY}
-        ${Boost_SYSTEM_LIBRARY} )
+target_link_libraries(${PROJECT_NAME}
+        Boost::log_setup
+        Boost::log
+        Boost::thread
+        Boost::system
+        nlohmann_json::nlohmann_json
+        )
 
 target_link_libraries( demo ${PROJECT_NAME} )
 
